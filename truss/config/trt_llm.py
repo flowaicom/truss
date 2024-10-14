@@ -6,7 +6,7 @@ from typing import Optional
 
 from huggingface_hub.errors import HFValidationError
 from huggingface_hub.utils import validate_repo_id
-from pydantic import BaseModel, PydanticDeprecatedSince20, validator
+from pydantic import BaseModel, PydanticDeprecatedSince20, field_validator
 from rich.console import Console
 
 # Suppress Pydantic V1 warnings, because we have to use it for backwards compat.
@@ -23,6 +23,7 @@ class TrussTRTLLMModel(str, Enum):
     MISTRAL = "mistral"
     DEEPSEEK = "deepseek"
     WHISPER = "whisper"
+    PHI = "phi"
 
 
 class TrussTRTLLMQuantizationType(str, Enum):
@@ -80,7 +81,7 @@ class TrussTRTLLMBuildConfiguration(BaseModel):
     num_builder_gpus: Optional[int] = None
     enable_chunked_context: bool = False
 
-    @validator("max_beam_width")
+    @field_validator("max_beam_width")
     def check_max_beam_width(cls, v: int):
         if isinstance(v, int):
             if v != 1:
